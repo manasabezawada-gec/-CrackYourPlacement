@@ -1,0 +1,167 @@
+Day1
+#CrackYourPlacement
+ARRAY
+LeetCode 287
+Question:
+Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+There is only one repeated number in nums, return this repeated number.
+You must solve the problem without modifying the array nums and uses only constant extra space.
+1.BruteForce Approach: Sorting
+  --Sort the given array
+  --compare adjacent elements to find the duplicate number.
+2.Another Approach: slow and fast pointer, also known as the "tortoise and hare" algorithm
+  Slow Pointer (Tortoise): Moves one step at a time.
+  Fast Pointer (Hare): Moves two steps at a time.
+  --"Detecting the cycle":  Initialize both pointers at the head of the list. Move the slow pointer one step and the fast pointer two    steps in each iteration. If there is a cycle, the fast pointer will eventually meet the slow pointer. If the fast pointer reaches the end of the list, there is no cycle.
+  --"finding the entrance of the cycle": Reset one of the pointers to the start of the list. Move both pointers one step at a time until they meet again. The meeting point is the duplicate element.
+    class Solution:
+
+    def findDuplicate(self, nums: List[int]) -> int:
+        slow, fast = nums[0], nums[0]
+        while True:
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+            if slow == fast:
+                break
+        slow = nums[0]
+        while slow != fast:
+            slow, fast = nums[slow], nums[fast]
+        return slow
+3.Using Binary Search
+   --sorting the array
+   --using binarysearch find duplicate:
+         --Calculate the midpoint (mid) of the current range.
+         --Count the number of elements in the array that are less than or equal to mid.
+         --Adjust the search range based on the count:
+              --If the count is greater than mid, it implies the duplicate is in the lower half.
+              --Otherwise, the duplicate is in the upper half.
+        Repeat the process until the search range converges to a single number, which is the duplicate.
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        nums.sort()
+        s,e = 0,len(nums)-1
+        m = s + (e-s)//2
+        while(s<=e):
+            if(nums[s]==nums[m]):
+                break
+            if(nums[m]-nums[s]<(m-s)):
+                e = m
+            elif(nums[m]-nums[s]>=(m-s)):
+                s = m
+            m = s+(e-s)//2
+        return nums[m] 
+
+LeetCode 75
+Question:Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+You must solve this problem without using the library's sort function.
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        Z= 0 # the index where next zero is placed
+        T= len(nums) - 1 # the index where next two is placed
+        i = 0 # current index (for iteration)
+        while i <= T:
+            if nums[i] == 0:
+                nums[i], nums[Z] = nums[Z], nums[i]
+                Z += 1
+            elif nums[i] == 2:
+                nums[i], nums[T] = nums[T], nums[i]
+                T -= 1
+                continue # continue is placed bcz when nums[i] is 2 we shouldn't increment i
+            i += 1
+LeetCode 26
+Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. The relative order of the elements should be kept the same. Then return the number of unique elements in nums.
+Consider the number of unique elements of nums to be k, to get accepted, you need to do the following things:
+Change the array nums such that the first k elements of nums contain the unique elements in the order they were present in nums initially. The remaining elements of nums are not important as well as the size of nums.
+Return k.
+Approach:
+    -taking a varibale x assigning to 1
+    -in array 1 st element is always unique 
+    -Since the elemets are in sorted order
+    -so we compare each element with the element at index x
+       --if they are not same then add element to array and increment x
+    -return array
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        x = 1
+        for i in range(len(nums)-1):
+	        if(nums[i]!=nums[i+1]):
+		        nums[x] = nums[i+1]
+		        x+=1
+        #print(nums)
+        return(x)
+LeetCode 73
+Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+You must do it in place.
+Approach:
+    -take inner and outer loops to iterate over each element in matrix
+    -if u encounter 0 at matrix[i][j] then
+              --replace all the ith row nonzero elements with a constant value  -2**32
+              --replace all the jth column nonzero elements with a constant value  -2**32
+              --we are using this -2**32 value for constant space complexity
+    -after termination of outerfor loop, the elements which has to be converted to zero are with the constant -2**32
+    -now take two for loops iterate over each element replace elements with constant to Zeros"
+
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        m=len(matrix)
+        n=len(matrix[0])
+        for i in range(m):
+            for j in range(n):
+                
+                if matrix[i][j]==0:
+                    for row in range(n):
+                        if matrix[i][row]!=0:
+                            matrix[i][row]=-2**32
+                    for col in range(m):
+                        if matrix[col][j]!=0:
+                            matrix[col][j]=-2**32
+
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j]==(-2**32):
+                    matrix[i][j]=0
+LeetCode 283
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+Note that you must do this in-place without making a copy of the array.
+Approach:
+    -assign 0 to a variable c # variable c keep track on nonzero elements
+    -take a for loop iterate over each element 
+       --if the element is not zero then move it to index c
+       --increment c
+    --after for loop termination all non zero elements are moved to front.
+    --now from after index c to end of array fill with zeros
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        c=0
+        for i in range(len(nums)):
+            if(nums[i]!=0):
+                nums[c]=nums[i]
+                c+=1
+        for i in range(c,len(nums)):
+            nums[i]=0        
+LeetCode 121
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        # Max profit and price to buy
+        max_profit = 0
+        high_buy = 0   
+        # Reverse the array of prices
+        prices = prices[::-1]   
+        # Check each price to sell at compared to the highest buy price ahead of it
+        for price in prices:
+            # Update highest buy price in front of price
+            if price > high_buy:
+                high_buy = price
+            # Check if this sale make higher profit than sales later in original array
+            if high_buy - price > max_profit:
+                max_profit = high_buy - price            
+        # Return the highest profit achieved
+        return max_profit
+        
