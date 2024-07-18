@@ -1,0 +1,79 @@
+Day 2
+ARRAY
+GFG Chocolate Distribution Problem:
+Given an array A[ ] of positive integers of size N, where each value represents the number of chocolates in a packet. Each packet can have a variable number of chocolates. There are M students, the task is to distribute chocolate packets among M students such that :
+1. Each student gets exactly one packet.
+2. The difference between maximum number of chocolates given to a student and minimum number of chocolates given to a student is minimum.
+Approach:
+    -sort the array in increasing order
+    -let the biggest element in array is "minimum"
+    -take a while loop to traverse array 
+       -find chocolates differenec between maximum and minimum chocolates of every subarray with size M
+       -update "minimum" variable with minimum of "chocolates diference" and "minimum"
+    -return "minimum" , it is the minimum chocolates difference among 5 students
+class Solution:
+    def findMinDiff(self, A,N,M):
+        A.sort()
+        i=0
+        j=0
+        minim=A[-1]
+        while j < N and (i+M-1) < N:
+            mini=A[i]
+            j=i+M-1
+            maxi=A[j]
+            minim=min(minim,(maxi-mini))
+            i+=1
+        return minim
+LeetCode: 1.TWO SUM
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+You can return the answer in any order.
+Approach:
+    -enumerate:
+    The enumerate function in Python is used to iterate over an iterable while keeping track of the index of each item. It returns an enumerate object, which produces pairs containing a count (from start, which defaults to 0) and the values obtained from iterating over the iterable.
+    -seen={} we use it to keep track of the indexs so far we visited
+   #1 -consider a for loop traverse through each index, and value.
+           #2 - we need two values which sum up to "target", calculate "reamining" =target-nums[i]
+           #3 -check if the value "remaining" is in seen ,means we found indexes which holding the values sum up to target
+                     #4 return current index and seen[remaining]  ; [i,seen[remaining]]
+           #5 - if "remaining" is not in seen, means we not found indexes which holding the values sum up to target, so add index i to seen[value]
+            
+class Solution:
+   def twoSum(self, nums: List[int], target: int) -> List[int]:
+       seen = {}
+       for i, value in enumerate(nums): #1
+           remaining = target - nums[i] #2
+           if remaining in seen: #3
+               return [i, seen[remaining]]  #4
+           else:
+               seen[value] = i  #5
+LeetCode: 122  Best Time to buy and sell Stock ||
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it then immediately sell it on the same day.
+Find and return the maximum profit you can achieve.
+Approach
+Explanation:
+We iterate through the array and check if the current price is greater than the previous price. If it is, we add the difference between the two prices to our max_profit variable.
+At the end, we return the max_profit. This is because we can buy and sell multiple times, so we just add up the profits from all possible transactions.
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        max_profit = 0
+        for i in range(1, len(prices)):
+            if prices[i] > prices[i-1]:
+                max_profit += prices[i] - prices[i-1]
+        return max_profit
+Leetcode:442
+Given an integer array nums of length n where all the integers of nums are in the range [1, n] and each integer appears once or twice, return an array of all the integers that appears twice.
+You must write an algorithm that runs in O(n) time and uses only constant extra space.
+Approach: using collections module's Counter method
+  - The collections.Counter class in Python is a subclass of the dict that is used for counting hashable objects. It provides a convenient way to count the occurrences of elements in an iterable, such as a list or a string
+ - in the obtained key, value pairs if the value == 2(means the occurence of key is 2) then add key to the answer
+ - return answer
+class Solution:
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+      #  print(collections.Counter(nums).items())
+        return [key for key,value in collections.Counter(nums).items() if value == 2]
+
+
+
+        
