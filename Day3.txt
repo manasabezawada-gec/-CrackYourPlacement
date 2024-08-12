@@ -1,0 +1,142 @@
+Day 3
+Array
+Leetcode 79. Word Search
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once. 
+Explanation:
+There are MN possible starting states and a valid state (i,j) must satisfy board[i,j] = word[0].
+Terminating condition is k == len(word)
+While generating the next candidates we have to make sure we are not revisiting a visited state. You use a table to mark visited positions or you can modify the board. The next state must be unvisited and equal to word[k]
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        rows=len(board)
+        cols=len(board[0])
+        visited=set()
+        def dfs(i,j,curr):
+            if curr==len(word):
+                return True
+            
+            if i<0 or j>=cols or j<0 or i>=rows or board[i][j]!=word[curr] or (i,j) in visited:
+                return False
+            
+            visited.add((i,j))
+            res=dfs(i+1,j,curr+1) or dfs(i-1,j,curr+1) or dfs(i,j+1,curr+1) or dfs(i,j-1,curr+1)
+            visited.remove((i,j))
+            return res
+            
+        for i in range(rows):
+            for j in range(cols):
+                if dfs(i,j,0): return True
+        return False
+LeetCode55>Jump Game
+You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+
+Return true if you can reach the last index, or false otherwise.
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        last_position = len(nums)-1
+        
+        for i in range(len(nums)-2,-1,-1): # Iterate backwards from second to last item until the first item
+            if (i + nums[i]) >= last_position: # If this index has jump count which can reach to or beyond the last position
+                last_position = i # Since we just need to reach to this new index
+        return last_position == 0
+
+LC 20 valid parenthesis
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Every close bracket has a corresponding open bracket of the same type.
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack, hm = [], {'(': ')', '{': '}', '[': ']'}
+        for ch in s:
+			# open bracket
+            if ch in hm: 
+                stack.append(ch)
+			# close bracket
+            else: 
+                if not stack or hm[stack[-1]] != ch: 
+                    return False
+                stack.pop()
+
+        return not stack	
+        
+Print all the duplicate characters in a string
+Given a string S, the task is to print all the duplicate characters with their occurrences in the given string.
+
+Example:
+
+Input: S = “geeksforgeeks”
+Output:
+e, count = 4
+g, count = 2
+k, count = 2
+s, count = 2
+
+Explanation: g occurs 2 times in the string, k occurs 2 times in the string, s occurs 2 times in the string while e occurs 4 times in the string rest of the characters have unique occurrences.
+def printDuplicates(str):
+    # Converting string to list of characters
+    char_list = list(str)
+    # Sorting the list of characters
+    char_list.sort()
+    
+    # Loop through the sorted list to find duplicates
+    i = 0
+    while i < len(char_list):
+        count = 1
+        # Counting the occurrences of each character
+        while i < len(char_list)-1 and char_list[i] == char_list[i+1]:
+            count += 1
+            i += 1
+        
+        # Printing the duplicate character and its count
+        if count > 1:
+            print(char_list[i], ", count = ", count)
+        i += 1
+
+str = "test string"
+printDuplicates(str)
+
+lc 28
+Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+ class Solution:
+    def strStr(self, haystack: str, needle: str) -> int:
+        if needle in haystack:
+            return(haystack.index(needle))
+        return -1
+class Solution:
+    def strStr(self, haystack, needle):
+        for i in range(len(haystack) - len(needle) + 1):
+            if haystack[i:i+len(needle)] == needle:
+                return i
+        return -1
+14. longest common prefix
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string "".
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        if not strs:
+            return ""
+        shortest = min(strs,key=len)  # min of strings by means of length. if not mentioned it consider the ascii values.
+        print(shortest)
+        for i, ch in enumerate(shortest):
+            for other in strs:
+                print(other[i])
+                if other[i] != ch:
+                    return shortest[:i]
+        return shortest 
+680. Valid Palindrome II
+Given a string s, return true if the s can be palindrome after deleting at most one character from it.
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        left, right = 0, len(s) - 1
+        while left < right:
+            if s[left] != s[right]:
+                one, two = s[left:right], s[left + 1:right + 1]
+                return one == one[::-1] or two == two[::-1]
+            left, right = left + 1, right - 1
+        return True
